@@ -13,3 +13,6 @@ class MockDatasetRepository(DatasetRepository):
 
     def get_all_rows(self) -> List[Row]:
         return self.rows
+
+    def read_csv(self, offset: int = 0, limit: int = 10) -> List[Row]:
+        return self.rows
