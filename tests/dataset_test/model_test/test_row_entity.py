@@ -1,6 +1,5 @@
 from dataset.model.row import Row
 
-
 def test_row_creation():
     row = Row(
         id=1,

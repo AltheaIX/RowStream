@@ -1,0 +1,5 @@
+>>> FULL READ
+{'rows': 101, 'time': 0.0013964999998279382, 'peak_memory': 83364}
+
+>>> OFFSET READ
+{'rows': 10, 'time': 0.0002509000005375128, 'peak_memory': 36803}

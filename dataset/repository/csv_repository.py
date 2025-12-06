@@ -1,4 +1,5 @@
 import csv
+from functools import lru_cache
 from typing import List
 
 from dataset.model.row import Row
@@ -31,7 +32,7 @@ class CSVDatasetRepository(DatasetRepository):
 
     def read_csv(self, offset: int = 0, limit: int = 10) -> List[Row]:
         rows = []
-        with open("tests/dataset.csv") as csvfile:
+        with open(self.file_path) as csvfile:
             reader = csv.DictReader(csvfile)
 
             for _ in range(offset):
@@ -55,3 +56,8 @@ class CSVDatasetRepository(DatasetRepository):
                 rows.append(row)
 
         return rows
+
+    @lru_cache(maxsize=1)
+    def count_rows(self) -> int:
+        with open(self.file_path, "r") as f:
+            return sum(1 for _ in f) - 1 # minus 1 for header
