@@ -1,6 +1,7 @@
 from dataset.repository.csv_repository import CSVDatasetRepository
 from dataset.service.pagination_service import CSVPaginationService
 from shared.const import Command
+from renderer import render_page
 
 
 def main():
@@ -23,15 +24,13 @@ def main():
                 print("prev - to go back to previous page")
             case Command.SHOW.value:
                 rows = service.get_page(current_page, page_size)
-
-                for r in rows:
-                    print("{0}. Name: {1}, ".format(r.id, r.nama))
-
-                print("Current page: {0}/{1}".format(current_page+1, total_pages))
+                render_page(rows, current_page, total_pages)
+                
             case Command.NEXT.value:
                 if current_page + 1 < total_pages:
                     current_page += 1
-                    print("Current page: {0}/{1}".format(current_page+1, total_pages))
+                    rows = service.get_page(current_page, page_size)
+                    render_page(rows, current_page, total_pages)
                 else:
                     print("Already on the last page")
             case Command.PREV.value:
