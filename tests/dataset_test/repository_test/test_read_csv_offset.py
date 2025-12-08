@@ -1,11 +1,14 @@
+import unittest
+
 from dataset.repository.csv_repository import CSVDatasetRepository
 
 
-def test_read_csv_offset():
-    offset = 1
-    limit = 10
+class TestClass(unittest.TestCase):
+    def test_read_csv_offset(self):
+        offset = 1
+        limit = 10
 
-    repo = CSVDatasetRepository("tests/dataset.csv")
-    rows = repo.read_csv(offset, limit)
+        repo = CSVDatasetRepository("../../dataset.csv")
+        rows = repo.read_csv(offset, limit)
 
-    assert rows[0].id == 2
+        assert rows[0].id == 2

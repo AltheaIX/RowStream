@@ -16,7 +16,6 @@ def measure(fn):
     tracemalloc.stop()
 
     return {
-        "rows": len(result),
         "time": t1 - t0,
         "peak_memory": peak
     }
@@ -29,4 +28,10 @@ if __name__ == "__main__":
     print(measure(lambda: repo.get_all_rows()))
 
     print("\n>>> OFFSET READ")
-    print(measure(lambda: repo.read_csv(limit=10, offset=0)))
+    print(measure(lambda: repo.read_csv(limit=10, offset=9999)))
+
+    print("\n>>> BUILD INDEX")
+    print(measure(lambda: repo.load_index()))
+
+    print("\n>>> OFFSET READ (WITH INDEXING)")
+    print(measure(lambda: repo.read_csv_with_seek(repo.index[len(repo.index)-1])))

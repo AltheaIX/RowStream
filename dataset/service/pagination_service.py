@@ -13,9 +13,14 @@ class CSVPaginationService:
         if page_size < 1:
             raise ValueError("page_size must be higher than 0")
 
-        offset = page_number * page_size
+        start = page_number * page_size
 
-        return self.repository.read_csv(offset, page_size)
+        if start >= len(self.repository.index):
+            return []
+
+        offset = self.repository.index[start]
+
+        return self.repository.read_csv_with_seek(offset, page_size)
 
     def get_total_pages(self, page_size: int):
         total = self.repository.count_rows()
