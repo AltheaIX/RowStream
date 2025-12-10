@@ -1,5 +1,5 @@
 ID,Nama,Umur,Gender,Nilai,Matkul,Tanggal,UTS,UAS
-1,Budi,24,Laki-laki,85,Kimia,9/8/2023,90,80
+1,Test,24,Laki-laki,85.0,Kimia,9/8/2023,90.0,80.0
 2,Ani,21,Perempuan,77.5,Matematika,15/8/2023,75,80
 3,Joko,20,Laki-laki,90,Biologi,15/8/2023,85,95
 4,Siti,21,Perempuan,60,Matematika,9/8/2023,55,65

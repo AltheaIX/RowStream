@@ -115,6 +115,31 @@ def csv_methods():
         self.index.append(offset)
         self.count_rows.cache_clear()
 
+    def update_csv(self, index_to_update: int, row: Row):
+        tmp = self.file_path + ".tmp"
+        need_reindexing = False
+
+        with open(self.file_path, "r", newline="") as src, open(tmp, "w", newline="") as dst:
+            for i, line in enumerate(src):
+                if i == index_to_update:
+                    new_data = f"{row.id},{row.nama},{row.umur},{row.gender},{row.nilai},{row.matkul},{row.tanggal},{row.uts},{row.uas}\n"
+
+                    if len(line) != len(new_data):
+                        need_reindexing = True
+
+                    dst.write(new_data)
+                    continue
+
+                dst.write(line)
+
+        os.replace(tmp, self.file_path)
+
+        if need_reindexing:
+            new_index = self.read_csv_indexing()
+            self.index = new_index
+            self.save_index(new_index)
+
+
     def delete_csv(self, index_to_delete: int):
         tmp = self.file_path + ".tmp"
 
@@ -125,7 +150,9 @@ def csv_methods():
 
         os.replace(tmp, self.file_path)
 
-        self.read_csv_indexing()
+        new_index = self.read_csv_indexing()
+        self.index = new_index
+        self.save_index(new_index)
         self.count_rows.cache_clear()
 
     CSVDatasetRepository.get_all_rows = get_all_rows
@@ -134,4 +161,5 @@ def csv_methods():
     CSVDatasetRepository.read_csv_indexing = read_csv_indexing
     CSVDatasetRepository.count_rows = count_rows
     CSVDatasetRepository.append_csv = append_csv
+    CSVDatasetRepository.update_csv = update_csv
     CSVDatasetRepository.delete_csv = delete_csv
