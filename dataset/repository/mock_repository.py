@@ -1,10 +1,9 @@
 from typing import List
 
 from dataset.model.row import Row
-from dataset.repository.dataset_repository import DatasetRepository
 
 
-class MockDatasetRepository(DatasetRepository):
+class MockDatasetRepository:
     def __init__(self):
         self.rows: List[Row] = [
             Row(1, "Budi", 21, "Laki-laki", 85, "Kimia", "9/8/2023", 90, 80),
