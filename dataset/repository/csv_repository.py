@@ -4,17 +4,10 @@ import struct
 from functools import lru_cache
 
 from dataset.model.row import Row
-from dataset.repository.dataset_repository import DatasetRepository
+from .repository import CSVDatasetRepository
 
 
-class CSVDatasetRepository(DatasetRepository):
-    def __init__(self, file_path: str):
-        self.file_path = file_path
-        self.index_file_path = "index.idx"
-        self.index: list[int] = []
-
-        self.load_index()
-
+def csv_methods():
     def get_all_rows(self) -> list[Row]:
         rows = []
         with open(self.file_path) as csvfile:
@@ -93,8 +86,7 @@ class CSVDatasetRepository(DatasetRepository):
     def read_csv_indexing(self) -> list[int]:
         indexing = []
         with open(self.file_path, 'r') as csvfile:
-            csvfile.readline() # for skipping header
-            indexing.append(csvfile.tell())
+            csvfile.readline()
 
             while True:
                 pos = csvfile.tell()
@@ -106,26 +98,26 @@ class CSVDatasetRepository(DatasetRepository):
 
         return indexing
 
-    def save_index(self, index: list[int]):
-        with open(self.index_file_path, "wb") as f:
-            for offset in index:
-                f.write(struct.pack("<Q", offset))
-
-    def load_index(self):
-        if not os.path.exists(self.index_file_path):
-            index = self.read_csv_indexing()
-            self.index = index
-            self.save_index(index)
-            return index
-
-        with open(self.index_file_path, "rb") as f:
-            data = f.read()
-
-        self.index = [offset for (offset,) in struct.iter_unpack("<Q", data)]
-        return self.index
-
-
     @lru_cache(maxsize=1)
     def count_rows(self) -> int:
         with open(self.file_path, "r") as f:
-            return sum(1 for _ in f) - 1 # minus 1 for header
+            return sum(1 for _ in f) - 1  # minus 1 for header
+
+    def append_csv(self, row: Row):
+        with open(self.file_path, "a") as f:
+            offset = f.tell()
+            line = f"{row.id},{row.nama},{row.umur},{row.gender},{row.nilai},{row.matkul},{row.tanggal},{row.uts},{row.uas}\n"
+            f.write(line)
+
+        with open(self.index_file_path, "ab") as idx:
+            idx.write(struct.pack("<Q", offset))
+
+        self.index.append(offset)
+        self.count_rows.cache_clear()
+
+    CSVDatasetRepository.get_all_rows = get_all_rows
+    CSVDatasetRepository.read_csv = read_csv
+    CSVDatasetRepository.read_csv_with_seek = read_csv_with_seek
+    CSVDatasetRepository.read_csv_indexing = read_csv_indexing
+    CSVDatasetRepository.count_rows = count_rows
+    CSVDatasetRepository.append_csv = append_csv

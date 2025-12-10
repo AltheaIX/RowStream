@@ -1,14 +1,13 @@
 import unittest
 
+from dataset.model.row import Row
 from dataset.repository.csv_repository import CSVDatasetRepository
 from dataset.service import CSVDatasetService
 
 
 class TestClass(unittest.TestCase):
-    def test_read_csv_pagination(self):
+    def test_create_row(self):
         repo = CSVDatasetRepository("../../dataset.csv")
         service = CSVDatasetService(repo)
 
-        rows = service.get_page(0, 2)
-
-        assert len(rows) == 2
+        service.create_row()

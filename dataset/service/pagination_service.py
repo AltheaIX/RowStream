@@ -1,12 +1,9 @@
 import math
 
-from dataset.repository import dataset_repository
+from .service import CSVDatasetService
 
 
-class CSVPaginationService:
-    def __init__(self, repository: dataset_repository):
-        self.repository = repository
-
+def pagination_methods():
     def get_page(self, page_number: int, page_size: int):
         if page_number < 0:
             raise ValueError("page_number cannot be negative")
@@ -25,3 +22,6 @@ class CSVPaginationService:
     def get_total_pages(self, page_size: int):
         total = self.repository.count_rows()
         return math.ceil(total / page_size)
+
+    CSVDatasetService.get_page = get_page
+    CSVDatasetService.get_total_pages = get_total_pages

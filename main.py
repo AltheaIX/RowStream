@@ -1,40 +1,71 @@
-from dataset.repository.csv_repository import CSVDatasetRepository
-from dataset.service.pagination_service import CSVPaginationService
+from dataset.repository.repository import CSVDatasetRepository
+from dataset.service import CSVDatasetService
 from shared.const import Command
 from renderer import render_page
 
 
 def main():
     repo = CSVDatasetRepository("dataset_full.csv")
-    service = CSVPaginationService(repo)
+    service = CSVDatasetService(repo)
 
     current_page = 0
-    page_size = 5
+    page_size = 1
 
     total_pages = service.get_total_pages(page_size)
 
     print("write 'help' for command list.")
     while True:
         cmd = input(">> ").strip().lower()
+        cmd_parts = cmd.split()
 
-        match cmd:
-            case Command.HELP.value:
+        match cmd_parts:
+            case [Command.HELP.value]:
                 print("show - to show all the data")
                 print("next - to go to next page")
                 print("prev - to go back to previous page")
-            case Command.SHOW.value:
+            case [Command.SHOW.value]:
                 rows = service.get_page(current_page, page_size)
                 render_page(rows, current_page, total_pages)
-                
-            case Command.NEXT.value:
+            case [Command.CREATE.value]:
+                data_row = {}
+
+                data_row['id'] = int(input("Enter ID: "))
+                data_row['nama'] = input("Enter Nama: ")
+                data_row['umur'] = int(input("Enter Umur: "))
+                data_row['gender'] = input("Enter Gender: ")
+                data_row['nilai'] = float(input("Enter Nilai: "))
+                data_row['matkul'] = input("Enter Matkul: ")
+                data_row['tanggal'] = input("Enter Tanggal: ")
+                data_row['uts'] = float(input("Enter UTS: "))
+                data_row['uas'] = float(input("Enter UAS: "))
+
+                service.create_row(data_row)
+                total_pages = service.get_total_pages(page_size)
+            case [Command.NEXT.value]:
                 if current_page + 1 < total_pages:
                     current_page += 1
                     rows = service.get_page(current_page, page_size)
                     render_page(rows, current_page, total_pages)
                 else:
                     print("Already on the last page")
-            case Command.PREV.value:
+            case [Command.JUMP.value, page]:
+                try:
+                    new_page = int(page)
+
+                    if new_page > total_pages or new_page < 0:
+                        print("Page not found.")
+                        continue
+
+                    current_page = new_page-1
+
+                    rows = service.get_page(current_page, page_size)
+                    render_page(rows, current_page, total_pages)
+                except ValueError:
+                    print(f"Error: '{page}' is invalid for JUMP.")
+            case [Command.PREV.value]:
                 current_page = max(0,current_page-1)
+                rows = service.get_page(current_page, page_size)
+                render_page(rows, current_page, total_pages)
             case _:
                 print("unknown commands. write 'help' for command list.")
 
