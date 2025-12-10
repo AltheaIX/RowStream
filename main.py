@@ -20,12 +20,12 @@ def main():
 
         match cmd_parts:
             case [Command.HELP.value]:
+                print("create - to create a new data")
                 print("show - to show all the data")
+                print("delete [number] - to delete an existing data")
+                print("jump [number] - to jump straight to the desired page")
                 print("next - to go to next page")
                 print("prev - to go back to previous page")
-            case [Command.SHOW.value]:
-                rows = service.get_page(current_page, page_size)
-                render_page(rows, current_page, total_pages)
             case [Command.CREATE.value]:
                 data_row = {}
 
@@ -41,13 +41,20 @@ def main():
 
                 service.create_row(data_row)
                 total_pages = service.get_total_pages(page_size)
-            case [Command.NEXT.value]:
-                if current_page + 1 < total_pages:
-                    current_page += 1
-                    rows = service.get_page(current_page, page_size)
-                    render_page(rows, current_page, total_pages)
-                else:
-                    print("Already on the last page")
+
+                print(f"Creating data has success")
+            case [Command.SHOW.value]:
+                rows = service.get_page(current_page, page_size)
+                render_page(rows, current_page, total_pages)
+            case [Command.DELETE.value, index]:
+                try:
+                    index_to_delete = int(index)
+                    service.delete_row(index_to_delete)
+                    total_pages = service.get_total_pages(page_size)
+
+                    print(f"Deleting data with index {index} has success.")
+                except ValueError:
+                    print(f"Error: '{index}' is an invalid number.")
             case [Command.JUMP.value, page]:
                 try:
                     new_page = int(page)
@@ -62,6 +69,13 @@ def main():
                     render_page(rows, current_page, total_pages)
                 except ValueError:
                     print(f"Error: '{page}' is invalid for JUMP.")
+            case [Command.NEXT.value]:
+                if current_page + 1 < total_pages:
+                    current_page += 1
+                    rows = service.get_page(current_page, page_size)
+                    render_page(rows, current_page, total_pages)
+                else:
+                    print("Already on the last page")
             case [Command.PREV.value]:
                 current_page = max(0,current_page-1)
                 rows = service.get_page(current_page, page_size)

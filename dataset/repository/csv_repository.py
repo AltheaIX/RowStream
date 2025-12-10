@@ -115,9 +115,23 @@ def csv_methods():
         self.index.append(offset)
         self.count_rows.cache_clear()
 
+    def delete_csv(self, index_to_delete: int):
+        tmp = self.file_path + ".tmp"
+
+        with open(self.file_path, "r", newline="") as src, open(tmp, "w", newline="") as dst:
+            for i, line in enumerate(src):
+                if i != index_to_delete:
+                    dst.write(line)
+
+        os.replace(tmp, self.file_path)
+
+        self.read_csv_indexing()
+        self.count_rows.cache_clear()
+
     CSVDatasetRepository.get_all_rows = get_all_rows
     CSVDatasetRepository.read_csv = read_csv
     CSVDatasetRepository.read_csv_with_seek = read_csv_with_seek
     CSVDatasetRepository.read_csv_indexing = read_csv_indexing
     CSVDatasetRepository.count_rows = count_rows
     CSVDatasetRepository.append_csv = append_csv
+    CSVDatasetRepository.delete_csv = delete_csv

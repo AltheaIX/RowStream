@@ -2,7 +2,7 @@ from dataset.model.row import Row
 from .service import CSVDatasetService
 
 
-def create_methods():
+def operation_methods():
     def create_row(self, data: dict):
         row = Row(
             id=data["id"],
@@ -17,4 +17,8 @@ def create_methods():
         )
         return self.repository.append_csv(row)
 
+    def delete_row(self, index: int):
+        return self.repository.delete_csv(index)
+
     CSVDatasetService.create_row = create_row
+    CSVDatasetService.delete_row = delete_row
