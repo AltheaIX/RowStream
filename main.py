@@ -50,11 +50,15 @@ def main():
                 data_row['nama'] = input("Enter Nama: ")
                 data_row['umur'] = int(input("Enter Umur: "))
                 data_row['gender'] = input("Enter Gender: ")
-                data_row['nilai'] = float(input("Enter Nilai: "))
                 data_row['matkul'] = input("Enter Matkul: ")
                 data_row['tanggal'] = input("Enter Tanggal: ")
                 data_row['uts'] = float(input("Enter UTS: "))
                 data_row['uas'] = float(input("Enter UAS: "))
+
+                try:
+                    data_row['nilai'] = float(data_row['uts'] + data_row['uas']) / 2
+                except ZeroDivisionError:
+                    data_row['nilai'] = 0.0
 
                 service.create_row(data_row)
                 total_pages = service.get_total_pages(page_size)
@@ -75,9 +79,13 @@ def main():
                     data_row['matkul'] = get_validated_input("Enter Matkul: ")
                     data_row['tanggal'] = get_validated_input("Enter Tanggal (YYYY-MM-DD): ")
                     data_row['umur'] = get_validated_input("Enter Umur: ", data_type=int)
-                    data_row['nilai'] = get_validated_input("Enter Nilai: ", data_type=float)
                     data_row['uts'] = get_validated_input("Enter UTS: ", data_type=float)
                     data_row['uas'] = get_validated_input("Enter UAS: ", data_type=float)
+
+                    try:
+                        data_row['nilai'] = float(data_row['uts'] + data_row['uas']) / 2
+                    except ZeroDivisionError:
+                        data_row['nilai'] = 0.0
 
                     service.update_row(index_to_update, data_row)
                 except ValueError:
