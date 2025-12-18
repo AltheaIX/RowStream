@@ -54,11 +54,7 @@ def main():
                 data_row['tanggal'] = input("Enter Tanggal: ")
                 data_row['uts'] = float(input("Enter UTS: "))
                 data_row['uas'] = float(input("Enter UAS: "))
-
-                try:
-                    data_row['nilai'] = float(data_row['uts'] + data_row['uas']) / 2
-                except ZeroDivisionError:
-                    data_row['nilai'] = 0.0
+                data_row['nilai'] = float(data_row['uts'] + data_row['uas']) / 2
 
                 service.create_row(data_row)
                 total_pages = service.get_total_pages(page_size)
@@ -81,11 +77,6 @@ def main():
                     data_row['umur'] = get_validated_input("Enter Umur: ", data_type=int)
                     data_row['uts'] = get_validated_input("Enter UTS: ", data_type=float)
                     data_row['uas'] = get_validated_input("Enter UAS: ", data_type=float)
-
-                    try:
-                        data_row['nilai'] = float(data_row['uts'] + data_row['uas']) / 2
-                    except ZeroDivisionError:
-                        data_row['nilai'] = 0.0
 
                     service.update_row(index_to_update, data_row)
                 except ValueError:
